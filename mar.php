@@ -72,15 +72,16 @@ class main {
 
 		$this->tests = new tests($this->options->getOption('t'));
 
-		if (!empty($this->options->getOption('php'))) {
+		$phpBinary = $this->options->getOption('php');
+		if (!empty($phpBinary)) {
 			$this->tests->setPHPBinaryPath($this->options->getOption('php'));
 		}
 
 		$start = microtime(true);
 
-    $extensions = !empty($this->options->getOption('x')) ? explode(',', $this->options->getOption('x')) : null;
-		$this->scanner = new scanner($this->projectPath, $extensions);
-
+		$fileExtensions = (is_array($this->options->getOption('x')) ? $this->options->getOption('x') : null);
+		$this->scanner = new scanner($this->projectPath, $this->options->getOption('x'));
+		$this->reporter->add("Including file extensions: ".implode(",", $this->scanner->getFileExtensions()), 0, 1);
 
 		$this->run();
 		$end = microtime(true);
